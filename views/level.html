@@ -1,60 +1,113 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css" >
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<!doctype html>
+<html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css">
+<link rel="stylesheet" href="/styles.css">
+<script src="https://use.fontawesome.com/4fdc0ba00a.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 
-<script>  
-  //const socket = io('http://localhost:8080');
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  
+  
+  const socket = io.connect('http://localhost:3000');
+  
+  socket.on('level', (data)=>{
+    console.log(data);
+    $('#levelText').text(data.level+ " m");
+    $('#levelBar').val(data.level.toString());
+    if(data.up === 'on' && !$('#levelUp').hasClass('is-info')) $('#levelUp').addClass('is-info');
+    if(data.up === 'off' && !$('#levelUp').hasClass('is-info')) $('#levelUp').removeClass('is-info');
+    if(data.down === 'on' && !$('#levelDown').hasClass('is-info')) $('#levelDown').addClass('is-info');    
+    if(data.down === 'off' && !$('#levelDown').hasClass('is-info')) $('#levelDown').removeClass('is-info');  
+    if(data.maintain === -1) $('#levelMaintainText').hide();
+    else{
+      $('#levelMaintainText').show();
+      $('#levelMaintainText').text('Mantendo em ' + data.maintain);
+      $('#levelDown').removeClass('is-info');    
+      $('#levelUp').removeClass('is-info');
+    }
+  });
+  
 
-  $( "#valveUp" ).click(function () {
-    alert( "Handler for .click() called." );
-    //socket.emit('valveUp', '');
-  });
-  $( "#valveDown" ).click(function () {
-    alert( "Handler for .click() called." );
-    //socket.emit('valveDown', '');
-  });
-  $( "button#valveMaintain" ).click(function () {
-    alert( "Handler for .click() called." );
-    $(this).css('background-color','red');
-    //socket.emit('valveMaintain', '');
-  });
-  $("#jQueryColorChange" ).click(function() {
-    $(this).toggleClass("is-info");
-  });
+  $(document).ready(()=>{
+    $('#levelMaintainText').hide();    
+    $(document).on('click', '#levelUp', function () {
+      $(this).toggleClass('is-info');
+      if ($(this).hasClass('is-info')) socket.emit('level', {up: 'on'});         
+      else socket.emit('level', {up: 'off'});      
+      $('#levelMaintainText').hide();      
+    });
+    $(document).on('click', '#levelDown', function () {  
+      $(this).toggleClass('is-info');
+      if ($(this).hasClass('is-info')) socket.emit('level', {down:'on'});     
+      else socket.emit('level', {down:'off'});      
+      $('#levelMaintainText').hide();  
+    });
+    
+    $(document).on('click', '#levelMaintain', function() {
+      let val = $('#levelMaintainData').val();
+      socket.emit('level', {maintain: val})
+      $('#levelMaintainText').show();
+      $('#levelMaintainText').text('Mantendo em ' + val);
+      $('#levelDown').removeClass('is-info');    
+      $('#levelUp').removeClass('is-info');
+    });
+
+  })
+  
 </script>
 
 <header class="hero is-light">
   <div class="hero-head">
     <nav class="nav has-shadow">
       <div class="nav-center">
-        <a class="nav-item is-tab">Home</a>
-        <a class="nav-item is-tab">Temperatura</a>
-        <a class="nav-item is-tab is-active">Nível</a>
-        <a class="nav-item is-tab">Informações Técnicas</a>
+        <a class="nav-item is-tab " href="http://localhost:3000/home">Home</a>
+        <a class="nav-item is-tab" href="http://localhost:3000/temperature">Temperatura</a>
+        <a class="nav-item is-tab is-active" href="http://localhost:3000/level">Nível</a>
+        <a class="nav-item is-tab" href="http://localhost:3000/informations">Informações Técnicas</a>
       </div>     
     </nav>
   </div>
 </header>
-      
-<div class="section">    
+
+<div class="section">
   <div class="panel">
     <p class="panel-heading">
       Tanque de Água
     </p>
     <div class="panel-block">
-      <div class="column"> 
+      <div class="column">
         <div class="box">
-          <div class="heading">Nível</div> 
-          <div class="title">
-            56,950 cm
-            <button class="button" id="jQueryColorChange">Click to change color</button>
-            <button class="button" id="valveUp">Encher</button>
-            <button class="button" id="valveMaintain">Manter</button>
-            <button class="button" id="valveDown">Esvaziar</button>            
-          </div>
-          <progress class="progress is-info" value="45" max="100">  </progress>
+          <div class="heading">Nível <i class="fa fa-bar-chart" aria-hidden="true"></i></div>
+          <div class="title is-1" >
+            <span id="levelText">  </span>
+            <div class="pull-right m-b-20">
+              <ul>
+                <li>
+                  <div class="field has-addons">
+                    <p class="control">
+                      <input class="input" type="text" id="levelMaintainData" placeholder="Digite o nível (m)">
+                    </p>
+                    <p class="control">
+                      <a class="button has-text-centered" id="levelMaintain">
+                        <i class="fa fa-minus" aria-hidden="true"> Manter </i>
+                      </a>
+                    </p>
+                  </div>
+                </li>
+                <li class="p-l-55 p-t-10 m-b-10">
+                  <button class="button has-text-centered" id="levelUp"><i class="fa fa-level-up" aria-hidden="true" style="padding-right: 7px;"> Encher</i></button>
+                  <button class="button has-text-centered" id="levelDown"> <i class="fa fa-level-down" aria-hidden="true"></i> Esvaziar</button>  
+                </li>
+              </ul>
+            </div>
+          </div>              
+          <progress class="progress is-info is-medium" value="45" max="100" id="levelBar"> </progress>      
+          <a class="tag is-info" style="display:block; margin:0 auto;text-align:center; width:20%;padding-top: 3px;" id="levelMaintainText">Mantendo em val</a>
+       
         </div>
       </div>
     </div>
   </div>
 </div>
+</hmtl>
