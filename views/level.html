@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css" >
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+<script>  
+  //const socket = io('http://localhost:8080');
+
+  $( "#valveUp" ).click(function () {
+    alert( "Handler for .click() called." );
+    //socket.emit('valveUp', '');
+  });
+  $( "#valveDown" ).click(function () {
+    alert( "Handler for .click() called." );
+    //socket.emit('valveDown', '');
+  });
+  $( "button#valveMaintain" ).click(function () {
+    alert( "Handler for .click() called." );
+    $(this).css('background-color','red');
+    //socket.emit('valveMaintain', '');
+  });
+  $("#jQueryColorChange" ).click(function() {
+    $(this).toggleClass("is-info");
+  });
+</script>
+
+<header class="hero is-light">
+  <div class="hero-head">
+    <nav class="nav has-shadow">
+      <div class="nav-center">
+        <a class="nav-item is-tab">Home</a>
+        <a class="nav-item is-tab">Temperatura</a>
+        <a class="nav-item is-tab is-active">Nível</a>
+        <a class="nav-item is-tab">Informações Técnicas</a>
+      </div>     
+    </nav>
+  </div>
+</header>
+      
+<div class="section">    
+  <div class="panel">
+    <p class="panel-heading">
+      Tanque de Água
+    </p>
+    <div class="panel-block">
+      <div class="column"> 
+        <div class="box">
+          <div class="heading">Nível</div> 
+          <div class="title">
+            56,950 cm
+            <button class="button" id="jQueryColorChange">Click to change color</button>
+            <button class="button" id="valveUp">Encher</button>
+            <button class="button" id="valveMaintain">Manter</button>
+            <button class="button" id="valveDown">Esvaziar</button>            
+          </div>
+          <progress class="progress is-info" value="45" max="100">  </progress>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css')
+link(rel='stylesheet', href='path/to/font-awesome/css/font-awesome.min.css')
+header.hero.is-light
+  .hero-head
+    nav.nav.has-shadow
+      .nav-center
+        a.nav-item.is-tab(href='http://localhost:8080/home') Home
+        a.nav-item.is-tab.is-active(href='http://localhost:8080/temperature') Temperatura
+        a.nav-item.is-tab(href='http://localhost:8080/level') Nível
+        a.nav-item.is-tab(href='http://localhost:8080/informations') Informações Técnicas
+.section
+  .columns
+    main.column
+      .columns.is-multiline
+        .column.is-6
+          .panel
+            p.panel-heading
+              | Barril
+            .panel-block
+              .column
+                .box
+                  .heading Temperatura Interna
+                  .title
+                    | 56,950
+              .column
+                .box
+                  .heading Temperatura Externa
+                  .title 55% / 45%
+        .column.is-6
+          .panel
+            p.panel-heading
+              | Peltier
+            .panel-block
+              .column
+                .box
+                  .heading Temperatura
+                  .title
+                    | 78%
+              .column
+                .box
+                  .heading Corrente
+                  .title 75% / 25%

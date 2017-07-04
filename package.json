@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/gsasouza/psel-bk/issues"
   },
-  "homepage": "https://github.com/gsasouza/psel-bk#readme"
+  "homepage": "https://github.com/gsasouza/psel-bk#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "johnny-five": "^0.11.3",
+    "pug": "^2.0.0-rc.2",
+    "socket.io": "^2.0.3"
+  }
 }
