@@ -1,11 +1,10 @@
 <!doctype html>
-<html>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css" >
 <script src="https://use.fontawesome.com/4fdc0ba00a.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <script src="/socket.io/socket.io.js"></script>
 <script>
-  const socket = io('http://localhost:3000');
+  const socket = io('http://localhost:8080');
   socket.on('temperature', (data)=>{
     console.log(data);
     if(data.tempExt) $('#tempExt').text(data.tempExt + " ºC");
@@ -16,14 +15,14 @@
 
 </script>
 
-<header class="hero is-light">
+<header class="hero is-info">
   <div class="hero-head">
     <nav class="nav has-shadow">
       <div class="nav-center">
-        <a class="nav-item is-tab " href="http://localhost:3000/home">Home</a>
-        <a class="nav-item is-tab is-active" href="http://localhost:3000/temperature">Temperatura</a>
-        <a class="nav-item is-tab" href="http://localhost:3000/level">Nível</a>
-        <a class="nav-item is-tab" href="http://localhost:3000/informations">Informações Técnicas</a>
+        <a class="nav-item is-tab " href="http://localhost:8080/home">Home</a>
+        <a class="nav-item is-tab is-active" href="http://localhost:8080/temperature">Temperatura</a>
+        <a class="nav-item is-tab" href="http://localhost:8080/level">Nível</a>
+        <a class="nav-item is-tab" href="http://localhost:8080/informations">Informações Técnicas</a>
       </div>     
     </nav>
   </div>
@@ -85,4 +84,3 @@
     </main>
   </div>
 </div>
-</html>

@@ -1,71 +1,83 @@
 <!doctype html>
-<html>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.2/css/bulma.css" >
 <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
 
 
-<header class="hero is-light">
+<header class="hero is-info">
   <div class="hero-head">
     <nav class="nav has-shadow">
       <div class="nav-center">
-        <a class="nav-item is-tab" href="http://localhost:3000/home">Home</a>
-        <a class="nav-item is-tab" href="http://localhost:3000/temperature">Temperatura</a>
-        <a class="nav-item is-tab" href="http://localhost:3000/level">Nível</a>
-        <a class="nav-item is-tab is-active" href="http://localhost:3000/informations">Informações Técnicas</a>
+        <a class="nav-item is-tab" href="http://localhost:8080/home">Home</a>
+        <a class="nav-item is-tab" href="http://localhost:8080/temperature">Temperatura</a>
+        <a class="nav-item is-tab" href="http://localhost:8080/level">Nível</a>
+        <a class="nav-item is-tab is-active" href="http://localhost:8080/informations">Informações Técnicas</a>
       </div>     
     </nav>
   </div>
 </header>
-<div class="section">
-  <div class="columns"> 
-    <main class="column">           
-      <div class="columns is-multiline">
-        <div class="column is-6">
-          <div class="panel">
-            <p class="panel-heading">
-              Barril
-            </p>
-            <div class="panel-block">
-              <div class="column"> 
-                <div class="box">
-                  <div class="heading">Temperatura Interna</div>
-                  <div class="title">56,950</div>
-                </div>
-              </div>
-              <div class="column">
-                <div class="box">
-                  <div class="heading">Temperatura Externa</div>
-                  <div class="title">55% / 45%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="column is-6">
-          <div class="panel">
-            <p class="panel-heading">
-              Peltier
-            </p>
-            <div class="panel-block">
-              <div class="column">
-                <div class="box">
-                  <div class="heading">Temperatura Peltier</div>
-                  <div class="title">
-                    78%
-                  </div>
-                </div>
-              </div>
-              <div class="column">
-                <div class="box">
-                  <div class="heading">Corrente Peltier</div>
-                  <div class="title">75% / 25%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>   
+<body>
+  <div class="box is-info">
+    <article class="media">
+      <div class="media-left">
+        <figure class="image is-64x64">
+          <img src="https://cdn.sparkfun.com//assets/parts/1/1/1/2/9/13678-03.jpg" alt="Image">
+        </figure>
       </div>
-    </main>
+      <div class="media-content">
+        <div class="content">
+          <p>
+            <strong><a href="https://www.embarcados.com.br/modulo-esp8266/">Conhecendo o ESP8266</a></strong>             
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="media">
+      <div class="media-left">
+        <figure class="image is-64x64">
+          <img src="https://cdn.sparkfun.com//assets/parts/1/1/1/2/9/13678-03.jpg" alt="Image">
+        </figure>
+      </div>
+      <div class="media-content">
+        <div class="content">
+          <p>
+            <strong><a href="http://br-arduino.org/2015/08/nodemcu-esp8266.html">Instalando o firmware NodeMCU e a linguagem Lua</a></strong>             
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="media">
+      <div class="media-left">
+        <figure class="image is-64x64">
+          <img src="https://cdn.sparkfun.com/assets/9/1/e/4/8/515b4656ce395f8a38000000.png" alt="Image">
+        </figure>
+      </div>
+      <div class="media-content">
+        <div class="content">
+          <p>
+            <strong><a href="http://www.eletronicaparatodos.com.br/2013/02/conhecendo-o-arduino.html">Conhecendo o Arduino</a></strong>             
+          </p>
+        </div>
+      </div>
+    </article>
+
+    <article class="media">
+      <div class="media-left">
+        <figure class="image is-64x64">
+          <img src="https://cdn.sparkfun.com//assets/parts/1/1/1/2/9/13678-03.jpg" alt="Image">
+        </figure>
+      </div>
+      <div class="media-content">
+        <div class="content">
+          <p>    
+            <strong><a href="http://labdegaragem.com/profiles/blogs/o-iot-feito-simples-monitorando-a-temperatura-desde-qualquer">Monitorando temperatura com o ESP8266</a></strong>             
+          </p>
+        </div>
+      </div>
+    </article>
+          
   </div>
-</div>
-</html>
+</body>
+
+

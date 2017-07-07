@@ -1,52 +1,70 @@
-function toScale(value, min1, max1, min2, max2){
-    let result = (((max2-min2) * (value - min1))/(max1-min1)) + min2
-  }
+const env = process.env.NODE_ENV;
 
-exports.getLevelInfo = function(levelSensor, maintainLevelValue){    
-  let level = toScale(hexToDec(levelSensor.value), 0, 1000, 0, 100);
-  return {up: 'on', dowm: 'off', maintain: maintainLevelValue, level: 70}
+function randomIntFromInterval(min,max){
+  return Math.floor(Math.random()*(max-min+1)+min);
 }
 
-exports.manageLevel = function(data, levelUp, levelDown, maintainLevelValue, levelSensor){
+const getLevelInfo = function(levelSensor, levelDown, levelUp, maintainLevelValue, socket){  
+  const result = {};
+  const mock = { // MOCK
+    level: randomIntFromInterval(0, 1000),
+    levelDown: 'off',
+    levelUp: 'off',
+    maintain: maintainLevelValue
+  };
+  if(env === 'development') return socket.emit('level', mock);
+  
+  levelSensor.on('change', function(){
+    result.level = this.value;
+    levelDown.query((downState)=>{
+      result.down = downState.value == 1 ? 'on' : 'off';
+      levelUp.query((upState)=>{
+        result.up = upState.value == 1 ? 'on': 'off';
+        result.maintain = maintainLevelValue;
+        return socket.emit('level', result);
+      });    
+    });
+  })    
+};
+
+exports.getLevelInfo = getLevelInfo;
+
+exports.manageLevel = function(data, levelUp, levelDown, levelSensor, maintainLevelValue, socket){
   if(data.up){
-    if(data.up === 'on') levelUp.high();
-    if(data.up === 'off') levelUp.low();
+    if(data.up === 'on') levelUp.on();
+    if(data.up === 'off') levelUp.off();
     maintainLevelValue = -1;
   };
   if(data.down){
-    if(data.down === 'on') levelDown.high();
-    if(data.down === 'off') levelDown.low();
+    if(data.down === 'on') levelDown.on();
+    if(data.down === 'off') levelDown.off();
     maintainLevelValue = -1;
   }
   if(data.maintain){
-    if(data.maintain !== maintainLevelValue){
-      maintainLevelValue = data.maintain;
-      maintainLevel(maintainLevelValue);
-    }
+    levelDown.off();
+    levelUp.off();
   } 
 }
 
 function hexToDec(value){
-  return parseInt(value.toString(), 16)
+  value = value.toString().slice(2, value.length);
+  return parseInt(value, 16);
 }
 
-function maintainLevel(value, levelSensor, levelUp, levelDown){
-  let level = levelSensor.value;
-  if(level !== value && value != -1){
-    if(level > value) {
-      levelDown.high();
-      levelUp.low();
-      return setTimeout(maintainLevel(value, levelSensor, levelUp, down), 1000);
+exports.maintainLevel = function(levelUp, levelDown, level, maintainLevelValue){  
+  if(maintainLevelValue === -1) return;
+  if(level !== maintainLevelValue){
+     if(level > maintainLevelValue){
+      levelDown.on();
+      levelUp.off();
     }
     else{
-      levelUp.high();
-      levelDown.low();
-      return setTimeout(maintainLevel(value, levelSensor, levelUp, down), 1000);
+      levelUp.on();
+      levelDown.off();
     }
   }
   else{
-    levelDown.low();
-    levelUp.low();
-  }  
-  console.log('maitaining')    
+    levelUp.off();
+    levelDown.off();
+  }
 }  

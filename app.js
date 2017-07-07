@@ -1,48 +1,72 @@
 const app = require('express')(),
   five = require('johnny-five'),
-  http = require('http').Server(app),
-  board = new five.Board(),
+  http = require('http').Server(app), 
   io = require('socket.io')(http);
 
+const board = new five.Board();
 const levelController = require('./controllers/levelController.js');
 const temperatureController = require('./controllers/temperatureController.js');
+const env =  process.env.NODE_ENV;
+const port = process.env.PORT || 3000; 
+let maintainLevelValue = -1;
+
+function randomIntFromInterval(min,max){
+  return Math.floor(Math.random()*(max-min+1)+min);
+}
 
 board.on('ready', ()=>{ 
 
   /** INICIALIZAÇÃO DOS SENSORES */
-  const [levelUp, levelDown, levelSensor] = [new five.Pin(13), new five.Pin(12), new five.Sensor('A0')];
-  const [tempInt, tempExt, tempPeltier] = [
+  const [levelUp, levelDown, levelSensor] = [
+    new five.Relay({pin: 13, type: 'NC'}),
+    new five.Relay({pin: 12, type: 'NC'}),
+    new five.Sensor({pin: 'A0', freq: 1000})];
+  const [tempInt, tempExt, tempPeltier, relayPeltier, currentPeltier] = [
     new five.Thermometer({controller: "LM35",pin: "A1"}),
     new five.Thermometer({controller: "LM35",pin: "A2"}),
-    new five.Thermometer({controller: "LM35",pin: "A3"})]
-  const currentPeltier = new five.Pin(11); 
-  let maintainLevelValue = -1;
+    new five.Thermometer({controller: "LM35",pin: "A3"}),
+    new five.Relay({pin: 11, type: 'NC'}),
+    new five.Sensor({pin: 'A4', freq: 1000})];
 
-
-  /* CONTROLE DE TEMPERATURA NO PELTIER */
-  temperatureController.maintainTemp(tempPeltier, currentPeltier);
 
   /** WEBSOCKET PARA COMUNICAÇÃO COM A PÁGINA EM TEMPO REAL*/
   io.on('connection', function(socket){
     /** FAZ O CONTROLE DO NIVEL */
     socket.on('level', (data)=>{
-      levelController.manageLevel(data, levelUp, levelDown, maintainLevelValue, levelSensor);
+      if(data.maintain && data.maintain !== maintainLevelValue) maintainLevelValue = data.maintain;
+      if(data.up || data.down) maintainLevelValue = -1;
+      levelController.manageLevel(data, levelUp, levelDown, levelSensor, maintainLevelValue, socket);
     });
 
     /** ENVIA O ESTADO DOS SENSORES ASSIM QUE A PÁGINA É ABERTA */
-    socket.emit('level', levelController.getLevelInfo(levelSensor, maintainLevelValue));
-    socket.emit('temperature', temperatureController.getTempValue(tempExt, tempInt, tempPeltier, currentPeltier));
+    levelController.getLevelInfo(levelSensor, levelDown, levelUp, maintainLevelValue, socket);    
+    temperatureController.getTempValue(tempExt, tempInt, tempPeltier, currentPeltier, socket);
     
-    /** VERIFICA SE HOUVE MUDANÇA DE TEMPERATURA */
-    tempExt.on('change', ()=> {
-      socket.emit('temperature', temperatureController.getTempValue(tempExt, tempInt, tempPeltier, currentPeltier));
+    /** ATUALIZA O VALOR DO NÍVEL DO TANQUE */
+    levelSensor.on('change', function(){
+      const value = env === 'development' ? randomIntFromInterval(0, 1000) : levelController.hexToDec(this.raw);
+      if(maintainLevelValue !== -1) levelController.maintainLevel(levelUp, levelDown, value, maintainLevelValue);
+      socket.emit('level', {level: value, maintain: maintainLevelValue});
     });
-    tempInt.on('change', ()=> {
-      socket.emit('temperature', temperatureController.getTempValue(tempExt, tempInt, tempPeltier, currentPeltier));
+    /** ATUALIZA OS VALORES DE TEMPERATURA*/    
+    tempExt.on('change', function(){
+      const value = env === 'development' ? randomIntFromInterval(15, 30) : this.value.toFixed();
+      socket.emit('temperature', {tempExt: value});
     });
-    tempPeltier.on('change', ()=> {
-      socket.emit('temperature', temperatureController.getTempValue(tempExt, tempInt, tempPeltier, currentPeltier));
-    });    
+    tempInt.on('change', function(){
+      const value = env === 'development' ? randomIntFromInterval(5, 15) : this.value.toFixed();
+      socket.emit('temperature', {tempInt: value});
+    });
+    tempPeltier.on('change', function(){
+      const value = env === 'development' ? randomIntFromInterval(-7, -5) : this.value.toFixed();
+      temperatureController.maintainTempPeltier(tempPeltier, currentPeltier, relayPeltier, this);
+      socket.emit('temperature', {tempPeltier: value});
+    }); 
+    currentPeltier.on('change', function(){
+      const value = env === 'development' ? randomIntFromInterval(1, 6) : this.value;
+      socket.emit('temperature', {currentPeltier: value});      
+    })
+       
   });
 
   /** ROUTES */
@@ -70,7 +94,7 @@ board.on('ready', ()=>{
   });
 
   /**SERVER LISTENER */
-  http.listen(3000, function(){
-    console.log('listening on *:3000');
+  http.listen(port, function(){
+    console.log('listening on : ' + port);
   });
 });
