@@ -5,8 +5,7 @@
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
-  
+<script>  
   
   const socket = io.connect('http://localhost:8080');
   
@@ -64,14 +63,15 @@
   
 </script>
 
-<header class="hero is-info">
+<header class="hero is-info is-bold">
   <div class="hero-head">
     <nav class="nav has-shadow">
       <div class="nav-center">
-        <a class="nav-item is-tab " href="http://localhost:8080/home">Home</a>
+        <a class="nav-item is-tab " href="http://localhost:8080/home">Início</a>
         <a class="nav-item is-tab" href="http://localhost:8080/temperature">Temperatura</a>
         <a class="nav-item is-tab is-active" href="http://localhost:8080/level">Nível</a>
         <a class="nav-item is-tab" href="http://localhost:8080/informations">Informações Técnicas</a>
+        <a class="nav-item is-tab" href="http://localhost:8080/help">Ajuda</a>
       </div>     
     </nav>
   </div>

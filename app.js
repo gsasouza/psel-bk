@@ -85,6 +85,9 @@ board.on('ready', ()=>{
   app.get('/level', function(req, res){
     res.sendFile(__dirname + '/views/level.html');
   });
+  app.get('/help', (req,res)=>{
+    res.sendFile(__dirname + '/views/help.html');
+  })
   app.get('/styles.css', (req, res)=>{
     res.sendFile(__dirname + '/public/css/styles.css');
   });
