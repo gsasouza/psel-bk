@@ -23,8 +23,6 @@
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.2.1",
     "johnny-five": "^0.11.3",
-    "pug": "^2.0.0-rc.2",
-    "socket-io": "^1.0.0",
     "socket.io": "^2.0.3"
   }
 }

@@ -3,11 +3,15 @@ const app = require('express')(),
   http = require('http').Server(app), 
   io = require('socket.io')(http);
 
-const board = new five.Board();
 const levelController = require('./controllers/levelController.js');
 const temperatureController = require('./controllers/temperatureController.js');
 const env =  process.env.NODE_ENV;
-const port = process.env.PORT || 3000; 
+const port = process.env.PORT || 3000;
+const serialPort = {port: process.env.SERIALPORT};
+let board = {}; 
+if(process.env.SERIALPORT !== "null") board = new five.Board(serialPort);
+else board = new five.Board();
+
 let maintainLevelValue = -1;
 
 function randomIntFromInterval(min,max){

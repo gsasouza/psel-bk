@@ -3,10 +3,9 @@
 <link rel="stylesheet" href="/styles.css">
 <script src="https://use.fontawesome.com/4fdc0ba00a.js"></script>
 <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-
 <script src="/socket.io/socket.io.js"></script>
-<script>  
-  
+
+<script>    
   const socket = io.connect('http://localhost:8080');
   
   socket.on('level', (data)=>{
